@@ -1,7 +1,10 @@
 {
-    "Routers":  ["Short","Entity","JSON"],
-    "Checkers": ["Value","Required","Type","Condition"],
-    "Inputs":   ["HTTP","STDIN","CLI"],
+    "Drivers":
+    {
+        "Routers":    ["Short","Entity","JSON"],
+        "Inputs":     ["HTTP","STDIN","CLI"],
+        "Behaviours": ["Contract","Driver"]
+    },
     "Limit":
     {
         "NestedCalls": 50

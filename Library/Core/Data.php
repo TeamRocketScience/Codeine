@@ -174,7 +174,7 @@
                 Code::On('Data.Options.Scope.NotDefined', $Call);
             }
             
-/*            // FIXME Behaviour?
+/*            // FIXME Behaviours?
             // Запрещение операций на точке монтирования
             if (isset(self::$_Conf['Options'][$Call['Point']]['No'.$Method]))
             {
@@ -182,7 +182,7 @@
                 return null;
             }
 
-            // FIXME Behaviour?
+            // FIXME Behaviours?
 
             if (isset($Call['Options']['Precondition'][$Method]))
                 foreach ($Call['Options']['Precondition'][$Method] as $Precondition)

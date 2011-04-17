@@ -52,10 +52,7 @@
 
         foreach ($Processors as $Processor)
             $Output = Code::Run(
-                array(
-                     'N' => 'View.Processors.'.$Processor,
-                     'F' => 'Process',
-                     'Input'=> $Output)
+                Core::mergeOptions($Processor, array('Input' => $Output))
             );
 
         // Вернуть

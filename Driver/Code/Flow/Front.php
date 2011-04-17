@@ -13,10 +13,13 @@
 
     self::Fn('Run', function ($Call)
     {
-        $Interfaces = Core::getOption('Core/Code::Inputs');
+        $Interfaces = Core::getOption('Core/Code::Drivers.Inputs');
 
         foreach ($Interfaces as $Interface)
-            if (Code::Run(array('N'=>'System.Input.'.$Interface,'F' => 'Detect')))
+            if (Code::Run(
+                    array(
+                         'N'=>'System.Input.'.$Interface,
+                         'F' => 'Detect')))
                 break;
 
         $Input = Code::Run(array('N' => 'System.Input.'.$Interface, 'F' => 'Input'));

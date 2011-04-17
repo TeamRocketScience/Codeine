@@ -1,14 +1,16 @@
 {
     "Do":
     {
-        "Driver":
-        {
-            "Default":
+        "Processors":
+        [
             {
-                "N": "Code.Strategy.Render",
-                "F": "Select"
+                "N": "View.Processors.HTML.Media.Merged",
+                "F": "Process"
+            },
+            {
+                "N": "View.Processors.HTML.I18N",
+                "F": "Process"
             }
-        },
-        "Processors": ["Exec", "HTML.Media", "HTML.I18N"]
+        ]
     }
 }

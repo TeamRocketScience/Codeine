@@ -11,11 +11,13 @@
      * @time 15:11
      */
 
-    self::Fn('Select', function ($Call)
+    self::Fn('beforeRun', function ($Call)
     {
         if (!isset($Call['Input']['D']))
             {
-                if (isset ($Call['Input']['Contract']) && isset($Call['Input']['Contract']['Driver']) && null !== $Call['Input']['Contract']['Driver'])
+                if (isset ($Call['Input']['Contract'])
+                    && isset($Call['Input']['Contract']['Driver'])
+                        && null !== $Call['Input']['Contract']['Driver'])
                 {
                     if (isset($Call['Input']['Contract']['Driver'][Environment]))
                         $Call['Input']['D'] = $Call['Input']['Contract']['Driver'][Environment];
@@ -27,6 +29,12 @@
 
                 $Call['Input']['D'] = Core::Any($Call['Input']['D']);
             }
-        
+
+        return $Call['Input'];
+    });
+
+
+    self::Fn('afterRun', function ($Call)
+    {
         return $Call['Input'];
     });

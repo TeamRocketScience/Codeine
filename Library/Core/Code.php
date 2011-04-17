@@ -70,60 +70,12 @@
             return is_array($Call) && isset($Call['N']);
         }
 
-        public static function LoadContract($Call)
-        {
-            if (!isset(self::$_Contracts[$Call['N']][$Call['F']]))
-            {
-                // Прочитать контракт по умолчанию
-                $Contract = array($Call['F'] => self::$_Contracts['Default']);
-
-                // Прочитать контракт группы, если есть
-
-                if (isset($Call['G']))
-                {
-                    $GroupContract = Data::Read('Contract::'.$Call['N'],Core::Kernel);
-
-                    if ($GroupContract !== null)
-                    {
-                        if (isset($GroupContract[$Call['F']]))
-                            $Contract = Core::mergeOptions($Contract, $GroupContract[$Call['F']]);
-                    }
-                }
-
-                // Прочитать контракт драйвера, если есть
-                if (isset($Call['D']))
-                {
-                    $DriverContract = Data::Read('Contract::'.$Call['N'].'/'.$Call['D'], Core::Kernel);
-
-                    if ($DriverContract !== null)
-                    {
-                        if (isset($DriverContract[$Call['F']]))
-                            $Contract = Core::mergeOptions($Contract, $DriverContract[$Call['F']]);
-                    }
-                }
-
-                // Внедрить наследования
-                // Внедрить примеси
-
-                self::$_Contracts[$Call['N']][$Call['F']] = $Contract;
-            }
-            else
-                $Contract = self::$_Contracts[$Call['N']][$Call['F']];
-
-            if (isset($Call['Override']))
-                $Contract = Core::mergeOptions($Contract, $Call['Override']);
-
-            $Call['Contract'] = $Contract;
-
-            return $Call;
-        }
-
         protected static function _Route($Call)
         {
             $NewCall = null;
 
             // Для каждого определенного роутера...
-            $Routers = Core::getOption('Core/Code::Routers');
+            $Routers = Core::getOption('Core/Code::Drivers.Routers');
 
             foreach ($Routers as $Router)
             {
@@ -250,8 +202,6 @@
         {
             self::$Counters['Call']++;
 
-            $Return = null;
-
             if (!self::isValidCall($Call))
                 $Call = self::_Route($Call);
 
@@ -261,30 +211,43 @@
             self::$_Stack->push($Call);
 
             if (Trace)
-                echo str_pad('', self::$_Stack->count(), "\t").'R: '.$Call['N'].'>'.$Call['F']."\n";
-            
-            // Загружаем контракт
+                echo str_pad('', self::$_Stack->count(), "\t")
+                     .'R: '.$Call['N'].'>'.$Call['F']."\n";
+
             if ($Mode == Core::User)
             {
-                $Call = self::LoadContract($Call);
-                // Выбираем драйвер
-                if (false) $Call = Code::Run(
-                    array('N' => 'Code.Behaviour.Driver',
-                          'F' => 'Select',
-                          'Input' => $Call), Core::Kernel);
+                // Выполняем плагины поведения
+                $Behaviours = Core::getOption('Core/Code::Drivers.Behaviours');
+                foreach ($Behaviours as $Behaviour)
+                    if (!isset($Call['No.'.$Behaviour]))
+                        $Call = Code::Run(
+                            array('N' => 'Code.Behaviours.'.$Behaviour,
+                                  'F' => 'beforeRun',
+                                  'Input' => $Call), Core::Kernel);
             }
 
-            self::$_Registration = $Call['N'];
+            if (!isset($Call['Result']))
+            {
+                self::$_Registration = $Call['N'];
 
-            // Если функции нет, подгружаем код
-            if (self::Fn($Call['F']) === null)
-                self::_LoadSource($Call);
+                // Если функции нет, подгружаем код
+                if (self::Fn($Call['F']) === null)
+                    self::_LoadSource($Call);
 
-            // Выполняем!
-            $Return = self::_Do($Call);
+                // Выполняем!
+                $Call['Result'] = self::_Do($Call);
+            }
+            
+            if ($Mode == Core::User)
+                foreach ($Behaviours as $Behaviour)
+                    if (!isset($Call['No.'.$Behaviour]))
+                        $Call = Code::Run(
+                            array('N' => 'Code.Behaviours.'.$Behaviour,
+                                  'F' => 'afterRun',
+                                  'Input' => $Call), Core::Kernel);
 
             self::$_Stack->pop();
-            return $Return;
+            return $Call['Result'];
         }
 
         protected static function _is($Key, $Contract)
@@ -295,36 +258,12 @@
                 return false;
         }
 
-        public static function Trace($Index = null)
-        {
-            $StackArray = array();
-            foreach (self::$_Stack as $Stack)
-                $StackArray[] = $Stack;
-
-            if ($Index == null)
-            {
-                return $StackArray;
-            }
-            elseif (isset($StackArray[$Index]))
-            {
-                return $StackArray[$Index];
-            }
-            else
-            {
-                return null;
-            }
-        }
-
         public static function Current($Call = null)
         {
             if (null !== $Call)
-            {
                 return Core::mergeOptions(self::$_Stack[0], $Call);
-            }
             else
-            {
                 return self::$_Stack[0];
-            }
         }
 
         public static function Parent($Call = null)

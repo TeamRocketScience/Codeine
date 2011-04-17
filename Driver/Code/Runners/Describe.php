@@ -21,8 +21,15 @@
         if (!isset($Call['Input']['F']))
             $Call['Input']['F'] = $Call['Input']['G'];
 
-        $Call = Code::LoadContract($Call['Input'], Core::User);
-        $Contract = $Call['Contract'];
+        $Contract = Code::Run(
+            array(
+                'N' => 'Code.Contract.Loader',
+                'F' => 'Do',
+                'Input' => $Call['Input']
+            ), Core::Kernel
+        );
+        
+        $Call = $Call['Input'];
 
         $Call['Items']['Header'] =
                 array('UI'=>'Heading', 'Level'=>2, 'Data' => strtr($Call['N'], '/','.').' '.$Call['F'].'()');
