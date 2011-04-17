@@ -17,6 +17,7 @@
             preg_match('@([\S]+)::([\S]+)\((.*)\)@SsUu', $Call['Call'], $Matches))
         {
             $Routed = array();
+            
             list($All, $Routed['N'], $Routed['F'], $Args) = $Matches;
 
             if (!empty($Args))

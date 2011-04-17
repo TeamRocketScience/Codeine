@@ -24,16 +24,13 @@
         {
             $URL = $_SERVER['REQUEST_URI'];
 
-            if (!empty($_SERVER['QUERY_STRING']))
-                $URL.= '?'.$_SERVER['QUERY_STRING'];
-
-            if (!empty($_POST))
+/*            if (!empty($_POST))
                 Data::Create(
                     array(
                         'ID' => 'POST',
                         'Data' => $_POST
                     )
-                );
+                );*/
 
             if (substr($URL,0,1) == '/')
                 $URL = substr($URL, 1);

@@ -11,13 +11,5 @@
      * @time 14:39
      */
 
-     $ST = microtime(true);
-     defined('Root') || define('Root', __DIR__);
-
      include 'Library/Core/Core.php';
-
-     Code::On('Front.Start');
-
-        Code::Run(array('N' => 'Code.Flow.Front', 'F'=>'Run'));
-
-     Code::On('Front.Finish');
+     Code::Run(array('N' => 'Code.Flow.Front', 'F'=>'Run'));

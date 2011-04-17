@@ -11,7 +11,7 @@
      * @time 5:56
      */
 
-    self::Fn('Print', function ($Call)
+    self::Fn('Return', function ($Call)
     {
         $Call['Items'][] =
             array(
@@ -20,4 +20,9 @@
             );
             
         return $Call;
+    });
+
+    self::Fn('Print', function ($Call)
+    {
+        echo 'Hello, world!';
     });

@@ -15,9 +15,6 @@
     {
         $Output = array();
 
-        if (!is_array($Call['Input']))
-            var_dump($Call);
-            
         foreach ($Call['Input'] as $IX => $OneCall)
             $Output[$IX] = Code::Run(
                             Core::mergeOptions(array('Data'=>$Call['Data']), $OneCall),

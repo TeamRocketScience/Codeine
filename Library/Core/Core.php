@@ -120,6 +120,7 @@
         {           
             try
             {
+                define ('Trace', isset($_GET['trace']));
                 define ('DS', DIRECTORY_SEPARATOR);
                 define ('Engine', realpath(__DIR__.'/../../').DS);
 

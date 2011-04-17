@@ -37,13 +37,6 @@
             self::$_Contracts['Default'] =  Data::Read('Contract::Default', Core::Kernel);
         }
 
-        /**
-         * @description Создаёт событие, и запускает его обработчики
-         * @static
-         * @param  $Event - имя события
-         * @param array $Data - дополнительные аргументы
-         * @return mixed|null
-         */
         public static function On($Event, $Data = array())
         {
             self::$Counters['On']++;
@@ -53,7 +46,7 @@
 
             $Hooks = Core::getOption('Hooks::' . $Event);
 
-            if ($Hooks !== null)
+            if (!empty($Hooks))
             {
                 self::$Counters['On.Catched']++;
                 return self::Run(
@@ -68,26 +61,14 @@
             //else
             //    self::On('Code.Event.NotSpecified', array('NewEvent' => $Event));
 
-            //echo $Event.'<br/>';
+            if (Trace)
+                echo 'E: '.$Event.'<br/>';
         }
 
-        /**
-         * @description Проверяет, является ли аргумент корректным вызовом.
-         * @static
-         * @param  $Call
-         * @return bool
-         */
         public static function isValidCall($Call)
         {
             return is_array($Call) && isset($Call['N']);
         }
-
-        /**
-         * @static
-         * @param  $Call
-         * @param int $Mode
-         * @return null
-         */
 
         public static function LoadContract($Call)
         {
@@ -161,12 +142,12 @@
                     break;
             }
 
-            // Если хоть один роутер вернул результат...
+            // Если ни один роутер не вернул результата
             if ($NewCall === null)
                 self::On('Code.Routing.Failed', array('Call' => $Call));
             else
                 $Call = $NewCall;
-
+            
             return $Call;
         }
 
@@ -182,14 +163,16 @@
                 if (null !== $Code)
                 {
                     if (false !== $Code)
-                        self::$_Functions[self::$_Registration['N']][$Function] = $Code;
+                        self::$_Functions[self::$_Registration][$Function] = $Code;
                     else
-                        unset(self::$_Functions[self::$_Registration['N']][$Function]);
+                        unset(self::$_Functions[self::$_Registration][$Function]);
                 }
                 else
                 {
-                    if (isset(self::$_Functions[self::$_Registration['N']][$Function]))
-                        return self::$_Functions[self::$_Registration['N']][$Function];
+                    if (isset(self::$_Functions[self::$_Registration][$Function]))
+                        return self::$_Functions[self::$_Registration][$Function];
+                    else
+                        return null;
                 }
             }
         }
@@ -237,6 +220,7 @@
                         $Call['Filename'] =  array(
                             $Call['N'] . '.php',
                             $Call['N'] . '/' . $Call['D'] . '.php');
+
                         self::On('Code.LoadSource.Include.FileNotFound', $Call);
                     }
                 break;
@@ -266,9 +250,6 @@
         {
             self::$Counters['Call']++;
 
-            if (self::$_Stack->count() > Core::getOption('Core/Code::Limit.NestedCalls'))
-                self::On('Code.NestedCalls.Overflow', $Call);
-
             $Return = null;
 
             if (!self::isValidCall($Call))
@@ -279,12 +260,15 @@
             
             self::$_Stack->push($Call);
 
+            if (Trace)
+                echo str_pad('', self::$_Stack->count(), "\t").'R: '.$Call['N'].'>'.$Call['F']."\n";
+            
             // Загружаем контракт
             if ($Mode == Core::User)
             {
                 $Call = self::LoadContract($Call);
                 // Выбираем драйвер
-                $Call = Code::Run(
+                if (false) $Call = Code::Run(
                     array('N' => 'Code.Behaviour.Driver',
                           'F' => 'Select',
                           'Input' => $Call), Core::Kernel);
@@ -309,70 +293,6 @@
                 return Core::Any($Contract[$Key]);
             else
                 return false;
-        }
-
-        // FIXME Behaviour!
-        protected static function _DetermineDriver($Call)
-        {
-            // Если в контракте указана политика драйверов, и драйвер не указан напрямую.
-
-            if (!isset($Call['D']))
-            {
-                if (isset ($Call['Contract']) && isset($Call['Contract']['Driver']) && null !== $Call['Contract']['Driver'])
-                {
-                    if (isset($Call['Contract']['Driver'][Environment]))
-                        $Call['D'] = $Call['Contract']['Driver'][Environment];
-                    else
-                        $Call['D'] = $Call['Contract']['Driver']['Default'];
-                }
-                else
-                    $Call['D'] = null;
-            }
-
-            $Call['D'] = Core::Any($Call['D']);
-
-            return $Call;
-        }
-
-        protected static function _FilterCall($Call)
-        {
-            if (isset($Call['Contract']['Arguments']))
-            {
-                foreach ($Call['Contract']['Arguments'] as $Name => $Node)
-                {
-                    if (isset($Node['Filter']))
-                    {
-                        if (!isset($Call[$Name]))
-                        {
-                            $Call[$Name] = self::Run(
-                                array(
-                                     'Calls' => array_merge($Call[$Name], $Node['Filter'])),
-                                Core::Kernel, 'Chain');
-                        }
-                    }
-                }
-            }
-
-            return $Call;
-        }
-
-        protected static function _CheckCall($Call)
-        {
-            // Валидация
-            if (isset($Call['Contract']['Arguments']))
-            {
-                foreach ($Call['Contract']['Arguments'] as $Name => $Node)
-                {
-                    if (!isset($Call[$Name]))
-                    {
-                        self::_Check(null, $Node);
-                    }
-                    else
-                    {
-                        self::_Check($Call[$Name], $Node);
-                    }
-                }
-            }
         }
 
         public static function Trace($Index = null)
