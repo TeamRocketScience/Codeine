@@ -14,10 +14,14 @@
     self::Fn('Run', function ($Call)
     {
         $Output = array();
-        foreach ($Call['Call']['Calls'] as $IX => $OneCall)
+
+        if (!is_array($Call['Input']))
+            var_dump($Call);
+            
+        foreach ($Call['Input'] as $IX => $OneCall)
             $Output[$IX] = Code::Run(
-                                Core::mergeOptions(array('Data'=>$Call['Call']['Data']), $OneCall),
-                                    $Call['Mode']);
+                            Core::mergeOptions(array('Data'=>$Call['Data']), $OneCall),
+                                $Call['Mode']);
 
         return $Output;
     });

@@ -13,7 +13,15 @@
 
     self::Fn('Run', function ($Call)
     {
-        $Call = Code::LoadContract($Call['Call'], Core::User);
+        $N = preg_split('@\.@', $Call['Input']['N']);
+
+        $Call['Input']['N'] = implode('/', $N);
+        $Call['Input']['G'] = array_pop($N);
+
+        if (!isset($Call['Input']['F']))
+            $Call['Input']['F'] = $Call['Input']['G'];
+
+        $Call = Code::LoadContract($Call['Input'], Core::User);
         $Contract = $Call['Contract'];
 
         $Call['Items']['Header'] =

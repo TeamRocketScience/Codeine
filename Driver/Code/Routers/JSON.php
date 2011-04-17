@@ -13,7 +13,7 @@
 
     self::Fn('Route', function ($Call)
     {
-        if ($Routed = json_decode($Call['Call'], true))
+        if (is_string($Call['Call']) && $Routed = json_decode($Call['Call'], true))
             return $Routed;
         else
             return null;

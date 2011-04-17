@@ -110,7 +110,8 @@
                 throw new Exception($Core.' not found');
 
             call_user_func(array($Core, 'Initialize'));
-            register_shutdown_function($Core.'::Shutdown');
+            Code::On($Core.'.Initialized');
+            register_shutdown_function(function () use ($Core) {Code::On($Core.'.Shutdown');});
 
             return true;
         }

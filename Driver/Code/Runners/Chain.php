@@ -13,20 +13,13 @@
 
     self::Fn('Run', function ($Call)
     {
-        $Result = Code::Run($Call['Call'][0]);
+        $Result = Code::Run($Call['Input'][0]);
 
-        unset($Call['Call'][0]);
+        unset($Call['Input'][0]);
 
-        foreach ($Call['Call'] as $IX => $OneCall)
+        foreach ($Call['Input'] as $IX => $OneCall)
         {
             $OneCall['Input'] = $Result;
-
-            if (isset($Call['Call'][$IX+1]))
-                $OneCall['ChainNext'] = $Call['Call'][$IX+1];
-
-            if (isset($Call['Call'][$IX-1]))
-                $OneCall['ChainPrev'] = $Call['Call'][$IX-1];
-
             $Result = Code::Run($OneCall, $Call['Mode']);
         }
 

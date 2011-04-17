@@ -13,5 +13,9 @@
 
     self::Fn('Do', function ($Call)
     {
-        return Code::Run(array('N' => 'Security.Hash', 'F' => 'Get', 'D' => 'MD5'), Core::User, null, 'Describe');
+        return Code::Run(
+            array('N' => 'Code.Runners.Describe',
+                  'F' => 'Run',
+                  'Input' => array('N' => 'Security.Hash', 'F' => 'Get', 'D' => 'MD5'))
+        );
     });

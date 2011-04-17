@@ -19,11 +19,16 @@
             if (Code::Run(array('N'=>'System.Input.'.$Interface,'F' => 'Detect')))
                 break;
 
-        $Input = array('N' => 'System.Input.'.$Interface, 'F' => 'Input');
+        $Input = Code::Run(array('N' => 'System.Input.'.$Interface, 'F' => 'Input'));
 
         return Code::Run(
-                array(Code::Run($Input),
-                array('N' => 'View.Render', 'F' => 'Do', 'D'=>'Codeine'),
-                array('N' => 'System.Output.HTTP', 'F' => 'Output')
-                ), Core::User, 'Chain');
+            array(
+                'N' => 'Code.Runners.Chain',
+                'F' => 'Run',
+                'Input' =>  array(
+                                $Input,
+                                array('N' => 'View.Render', 'F' => 'Do', 'D'=>'Codeine'),
+                                array('N' => 'System.Output.HTTP', 'F' => 'Output')
+                            )
+            ));
     });

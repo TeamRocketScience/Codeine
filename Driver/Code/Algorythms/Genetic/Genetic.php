@@ -16,13 +16,11 @@
         // Initialization
         
         foreach ($Call['Sets'] as $Index => $Set)
-        {
             $Ranks[$Index] =  Code::Run(
                 array_merge($Call['Ranker'],
                     array('Input' =>
                         array_merge($Call['Base'], $Set)))
             );
-        }
 
         // Crossover
     });
