@@ -14,14 +14,15 @@
     self::Fn('Do', function ($Call)
     {
         $Call = $Call['Input'];
+
         // Прочитать контракт по умолчанию
         $Contract = array ($Call['F'] => array());
 
         // Прочитать контракт группы, если есть
 
-        if (isset($Call['G']))
+        if (isset($Call['N']))
         {
-            $GroupContract = Data::Read('Contract::'.$Call['N'],Core::Kernel);
+            $GroupContract = Data::Read('Contract::'.$Call['N'], Core::Kernel);
 
             if ($GroupContract !== null)
             {

@@ -1,7 +1,7 @@
 <?php
 
     /* OSWA Codeine
-     * @author BreathLess
+     * @author Breath`Less
      * @type Codeine Driver
      * @description: Object Templater Codeine
      * @package Codeine
@@ -17,9 +17,8 @@
 
         foreach ($Call['Contract']['Fusers'] as $Fuser)
             $Output = Code::Run(Code::Current(array(
-                           'N' => 'View.UI.Codeine.Object.Fusers',
+                           'N' => 'View.UI.Codeine.Object.Fusers.'.$Fuser,
                            'F' => 'Fusion',
-                           'D' => $Fuser,
                            'Body' => $Output,
                            'Data' => $Call['Data'])
                       ));

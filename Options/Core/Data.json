@@ -77,7 +77,7 @@
 
         "Page":    {
             "Store": "MySQL",
-            "Map": "Table.Fluid"
+            "Map": "Fluid"
         },
 
         "Blog":    {

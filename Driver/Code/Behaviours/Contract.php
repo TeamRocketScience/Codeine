@@ -15,14 +15,16 @@
     {
         $Call = $Call['Input'];
         
-        $Call['Contract'] = Code::Run(
+        $Contract = Code::Run(
             array(
                 'N' => 'Code.Contract.Loader',
                 'F' => 'Do',
                 'Input' => $Call
             ), Core::Kernel
         );
-        
+
+        $Call['Contract'] = $Contract;
+
         return $Call;
 
     });

@@ -299,12 +299,14 @@
             }
 
             if (isset($Call['Options']['Map']))
-                $Call['Result'] = Code::Run(
+            {
+                $Call['Result'] = (Code::Run(
                     array(
-                        'N' => 'Data.Map.'.$Call['Options']['Map'],
-                        'F' => 'afterRead',
-                        'Result'=> $Call['Result']
-                    ),$Mode);
+                         'N' => 'Data.Map.Fluid',
+                         'F' => 'afterRead',
+                         'Input'=> $Call['Result']
+                    )));
+            }
 
             return $Call['Result'];
         }

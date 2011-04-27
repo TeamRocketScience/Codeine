@@ -82,9 +82,8 @@
                 // Пробуем роутер из списка...
                 $NewCall = Code::Run(
                     array(
-                         'N' => 'Code.Routers',
+                         'N' => 'Code.Routers.'.$Router,
                          'F' => 'Route',
-                         'D' => $Router,
                          'Call' => $Call
                     ), Core::Kernel
                 );

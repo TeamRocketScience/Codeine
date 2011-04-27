@@ -21,6 +21,7 @@
 
                 $Call['Body'] = str_replace($Match, $Value , $Call['Body']);
             }
+        
         // FIXME Multikeys, isset?
         return $Call['Body'];
     });

@@ -22,7 +22,7 @@
                 // FIXME Extension Detect
                 list($Call['Call'], $Routed['Format']) = explode('.', $Call['Call']);
             }
-            
+
             $Actions = Code::Run(
                             array(
                                 'N' => 'Code.Source.Enumerate',
