@@ -256,7 +256,9 @@
                         'Call'=> $Call
                     ));
 
-            return self::_CRUD('Create', $Call, $Mode);
+            $Call = self::_CRUD('Create', $Call, $Mode);
+            
+            return $Call['Result'];
         }
 
         public static function Query ($Call, $Mode = Core::User)
@@ -313,13 +315,8 @@
 
         public static function Update ($Call, $Mode = Core::User)
         {
-            if (isset(self::$_Conf['Points'][$Call['Point']]['Map']))
-                $Call = Code::Run(
-                    Core::mergeOptions($Call,array(
-                        'N' => 'Data.Map.'.self::$_Conf['Points'][$Call['Point']]['Map'],
-                        'F' => 'Update')));
-            
-            return self::_CRUD('Update', $Call, $Mode);
+            $Call = self::_CRUD('Update', $Call, $Mode);
+            return $Call['Result'];
         }
 
         public static function Delete ($Call, $Mode = Core::User)

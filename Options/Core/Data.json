@@ -21,6 +21,11 @@
             "Type": "File.Layout",
             "DSN": "Data/"
         },
+        "FlatFS":
+        {
+            "Type": "File.Flat",
+            "DSN": ""
+        },
         "FS":
         {
             "Type": "File.Cascade",
@@ -92,6 +97,10 @@
         "FS":      {
             "Store": "FS",
             "Scope": ""
+        },
+        "Data":    {
+            "Store": "FlatFS",
+            "Scope": "Data"
         },
         "JS":      {
             "Store": "FS",

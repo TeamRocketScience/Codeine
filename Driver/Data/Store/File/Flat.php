@@ -3,7 +3,7 @@
     /* OSWA Codeine
      * @author BreathLess
      * @type Codeine Driver
-     * @description: Flatfile
+     * @description: Flat file
      * @package Codeine
      * @subpackage Drivers
      * @version 5.0
@@ -24,23 +24,42 @@
     self::Fn('Read', function ($Call)
     {
         Code::On('Data.FS.Query',$Call);
-        return file_get_contents(Root.$Call['Link'].'/'.$Call['Scope'].'/'.$Call['Where']['ID']);
+        $Filename = Root.$Call['Link'].$Call['Options']['Scope'].'/'.$Call['Where']['ID'];
+        
+        if (is_readable($Filename))
+            return file_get_contents($Filename);
+        else
+        {
+            Code::On('Eee');
+            return null;
+        }
     });
 
     self::Fn('Create', function ($Call)
     {
         Code::On('Data.FS.Query',$Call);
-        return file_put_contents(Root.$Call['Link'].'/'.$Call['Options']['Scope'].'/'.$Call['ID'], $Call['Body']);
+        $Filename = Root.$Call['Link'].$Call['Options']['Scope'].'/'.$Call['ID'];
+
+        return file_put_contents($Filename, $Call['Data']);
     });
 
     self::Fn('Update', function ($Call)
     {
-        Code::On('Data.FS.Query',$Call);
-        return file_put_contents(Root.$Call['Link'].'/'.$Call['ID'], $Call['Body']);
+        $Filename = Root.$Call['Link'].$Call['Options']['Scope'] . '/' . $Call['ID'];
+
+        if (is_writeable($Filename))
+            return file_put_contents($Filename, $Call['Data']);
+        else
+        {
+            Code::On('Eee');
+            return null;
+        }
     });
 
     self::Fn('Delete', function ($Call)
     {
         Code::On('Data.FS.Query',$Call);
-        return unlink(Root.$Call['Link'].'/'.$Call['ID']);
+        $Filename = Root.$Call['Link'].$Call['Options']['Scope'].'/'.$Call['ID'];
+
+        return unlink($Filename);
     });
