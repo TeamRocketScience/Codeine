@@ -11,6 +11,11 @@
      * @time 6:12
      */
 
+    self::Fn('Add', function ($Call)
+    {
+        return $Call['A'] + $Call['B'];
+    });
+
     self::Fn('SquareRoot', function ($Call)
     {
         return sqrt($Call['Input']);
